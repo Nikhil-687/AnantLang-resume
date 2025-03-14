@@ -3,16 +3,80 @@ let data = "";
 
 
 let trimData = '';
+
+let preDefinedCommands = [
+    {
+        // struct
+        name: "\\name",
+        syntax: "\\name {userName} [colour(the declared one || #000 formate)] [style:'']",
+        commad: [],
+        message: "This is a very basic commands take a text as input(name feild of user),further options are also provided",
+        options: "B(old)/U(nderline)/H(ighlight)/L(arge)/S(mall)",
+        discription: "                  \
+                            This is a very basic commands take a text as input(name feild of user),further options are also provided                            \
+                            syntax => \\name {userName} [colour(the declared one || #000 formate)] [style: '']\
+                            \
+                            ->                                              \
+                            ->       options:                               \
+                            ->                 B- bold                      \
+                            ->                 U- underline                 \
+                            ->                 H- highlight                 \
+                            ->                 L- large                     \
+                            ->                 S- small                     \
+                            \
+                            [] -> this feilds are optional                  \
+                            [style:'display:flex, fontSize:20px']-> can directly pass css to it        \
+        "
+    }
+];
+
+
+
+function indPresent(s){
+    for(let i = 0;i < preDefinedCommands.length;i++){
+        if(preDefinedCommands[i].name === s){return i;}
+    }
+    return -1;
+}
+
+/// string to html to render as a div
+/// this stor function works very very very well testings compleated for parsing separating commands and args and options
+function stor(x, y){
+    // console.log(x);
+    // x is the command struct
+    // y is users command to the programm
+    // object to return 
+    let z = {
+        name: x.name,
+        commands: []
+    };
+    let com = '';
+    for(let i = z.name.length;i < y.length;i++){
+        if(y[i] == ' ' || y[i] == '[' || y[i] == '{' || y[i] == '(' || y[i] == ')' || y[i] == '}' || y[i] == ']'){
+            if(com.trim() !== '')z.commands.push(com);
+            com = '';
+        }
+        else {
+            com += y[i];
+        }
+    }
+    z.commands.push(com);
+    z.commands.forEach((e) => {
+        console.log(e);
+    })
+
+}
+
+
 function consolTagsAndVals(data){
     let tags = [];
     let vals = [];
-    let count = 0;
+    // let count = 0;
     trimData = '';
     for(let i = 0;i < data.length;i++){
         if(data[i] == '%'){
-            
             i++;
-            while(data[i] != '\n' && i < data.length){
+            while(i < data.length && data[i] != '\n'){
                 i++;
             }i++;
             trimData += '\n';
@@ -30,22 +94,27 @@ function consolTagsAndVals(data){
                 trimData+= data[i];
                 i++;
             }
-            while(i < data.length && ((data[i] >= 'A' && data[i] <= 'Z') || (data[i] >= 'a' && data[i] <= 'z') || (data[i] >= '0' && data[i] <= '9') || data[i] == ' ' || data[i] == '{' || data[i] == '}' || data[i] == '(' || data[i] == ')' || data[i] == '[' || data[i] == ']')){
+            while(i < data.length && ((data[i] >= 'A' && data[i] <= 'Z') || (data[i] >= 'a' && data[i] <= 'z') || (data[i] >= '0' && data[i] <= '9') || data[i] == ' ' || data[i] == '{' || data[i] == '}' || data[i] == '(' || data[i] == ')' || data[i] == '[' || data[i] == ']' || data[i] == ' ')){
                 if(data[i] == '{'){
-                    while(data[i] != '}' && i < data.length){
+                    while(i < data.length && data[i] != '}'){
                         val += data[i];
                         i++;
                     }
                 }if(data[i] == '('){
-                    while(data[i] != ')' && i < data.length){
+                    while(i < data.length && data[i] != ')'){
                         val += data[i];
                         i++;
                     }
                 }if(data[i] == '['){
-                    while(data[i] != ']' && i < data.length){
+                    while(i < data.length && data[i] != ']'){
                         val += data[i];
                         i++;
                     }
+                }
+                if(data[i] == ' '){
+                    while(i < data.length && data[i] == ' '){i++;}
+                    // val+= ' ';
+                    i--;
                 }
                 val += data[i];
                 i++;
@@ -71,10 +140,19 @@ function consolTagsAndVals(data){
     }
     console.log(trimedTags);
     console.log(trimedVals);
+    for(let i = 0;i < trimedTags.length;i++){
+        let j = indPresent(trimedTags[i]);
+        if(j != -1){ /// the second input is predefined tags not considered because no other option was there{needs a better eleboration for next vertion}
+            // console.log("Hello world\n");
+            // console.log(preDefinedCommands[j]);
+            // console.log("STOR function testing");
+            stor(preDefinedCommands[j], trimedVals[i]);
+        }
+    }
     // tags.forEach((e) => {if(e !== '\\'){count++;console.log(e)}})
         // console.log("No. of Tags: ",count);
     // vals.forEach((e) => {if(e.trim() !== ''){console.log(e)}})
-    console.log(" ");
+    // console.log(" ");
 }
 
 
@@ -87,10 +165,12 @@ setTimeout(() => {
                 data = document.getElementById("resumeCode").innerHTML
                       .replace(/<div>/g, "\n")
                       .replace(/<\/div>/g, "")
-                      .replace(/<br>/g, "\n");
-                    
+                      .replace(/<br>/g, "\n")
+                      .replace(/&nbsp;/g, " ")
+                      .replace(/\s+/g, " ");
                 consolTagsAndVals(data);
-                // console.log(data);
+                // stor();
+                console.log(data);
             }, 1000);
         });
 }, 200);
@@ -101,6 +181,8 @@ setTimeout(() => {
 
 
 
+
+// challenges faced
 
 // /// Test Cases
 // %Resume\csd\c\sd\ds\\\sd
@@ -118,5 +200,33 @@ setTimeout(() => {
 
 
 /// comented lines, tag lines colouring 
-{/* <span className="comment"></span> */}
-{/* <span className="tag"></span>*/}
+// {/* <p className="comment"></p> */}{using span instead of p has so tereable experiance it forced to not render whole modeule text area}
+{/* <p className="tag"></p>*/}
+
+
+
+
+// 14th march 9:46
+/// here the newest of the errors started arrising :
+    // first of all here on multiple spaces the tags started to break ie the values/args of tags were ignored 
+    // solving that issue i got in a new one that it was now also removing the first spaces from here making parsing near to impossible
+    // on solving here i am in a very unexpected error that is this tags should have been divided in twos and the second one should be ignore but in this case unfortunately they got merged with no reason still find this bug out and also trying new edge cases to test on with
+    // also the multi space erro remains.
+
+    // inputs                              outputs                              expected 
+    // \name nikhil patidar      ->   \\name nikhil patidar        |      \\name nikhil patidar
+    // \name nikhil \ patidar    ->   \\name nikhil \\ patidar     |      \\name nikhil
+    // \name nikhil  patidar     ->   \\name nikhil                |      \\name nikhil patidar          
+//                                    \\name nikhil &nbsp; patidar
+//                                                  ^ => this '&' is the guilty
+
+// 14th march 10:05
+
+// //  data = document.getElementById("resumeCode").innerHTML
+// .replace("&nbsp;", " ");
+//  have tried this but it turned into very new and ... thing because it started ignoring one space in continuation but what;
+//  yes on one, two space it outputs one, two space
+// but on three spaces it outputs 2 spaces and 1 &nbsp; 
+// again 4th space was skipped and now 2spaces followed by 1 &nbsp; and 1 space is outputed 
+// and you gused it wright 2spaces 1 &nbsp; 1 space and 1 &nbsp; 
+
