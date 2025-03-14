@@ -1,0 +1,9 @@
+.comment{
+    display: contents;
+    background-color: rgb(28, 28, 28);
+    color: rgb(150, 252, 218);
+}.tag{
+    display: contents;
+    background-color: rgb(28, 28, 28);
+    color: rgb(225, 100, 247);
+}

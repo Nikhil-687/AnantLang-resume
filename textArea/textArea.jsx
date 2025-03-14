@@ -1,6 +1,6 @@
 // import parsing from './parsing.jsx'
 
-
+import './textStyles.css'
 
 
 
@@ -12,7 +12,8 @@ export default function TextArea(){
             <div>
                 <div id="hi">
                     <div  contentEditable="true" id="resumeCode" style={{border:"1px solid white", width:"400px", height:"500px"}} name=""  >
-                        %Resume
+                        {/* class name = comment, tag */}
+                    
                     </div>
                     <button>
                         Compile
