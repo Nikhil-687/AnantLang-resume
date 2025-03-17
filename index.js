@@ -4,8 +4,15 @@ let data = "";
 
 let trimData = '';
 
-let preDefinedCommands = [
-    {
+
+function invert(s){
+    if(s === '{')return '}';
+    if(s === '(')return ')';
+    if(s === '[')return ']';
+}
+
+let preDefinedCommands = {
+    "\\name":{
         // struct
         name: "\\name",
         syntax: "\\name {userName} [colour(the declared one || #000 formate)] [style:'']",
@@ -28,15 +35,28 @@ let preDefinedCommands = [
                             [style:'display:flex, fontSize:20px']-> can directly pass css to it        \
         "
     }
-];
+};
 
+let comNames = [
+    '\\name'
+    // '\\head1'
+]
 
 
 function indPresent(s){
-    for(let i = 0;i < preDefinedCommands.length;i++){
-        if(preDefinedCommands[i].name === s){return i;}
-    }
-    return -1;
+    // for(let i = 0;i < preDefinedCommands.length;i++){
+        // console.log("indPresent called");
+        let ans;
+        comNames.forEach(e => {
+            // console.log("dsdas")
+            // console.log(s);
+            // console.log(preDefinedCommands[e].name);
+            // console.log(preDefinedCommands[e].name == s);
+            if(preDefinedCommands[e].name == s){ans = preDefinedCommands[e].name;return ;console.log("sdcadss");}
+        });
+        // if(preDefinedCommands["\\name"].name === s){return i;}
+    // }
+    return ans || -1;
 }
 
 /// string to html to render as a div
@@ -55,12 +75,19 @@ function stor(x, y){
         if(y[i] == ' ' || y[i] == '[' || y[i] == '{' || y[i] == '(' || y[i] == ')' || y[i] == '}' || y[i] == ']'){
             if(com.trim() !== '')z.commands.push(com);
             com = '';
+            if(y[i] == '{' || y[i] =='(' || y[i] == '['){
+                let till = invert(y[i]);
+                // while(y[i] != till){
+
+                
+            }
         }
         else {
             com += y[i];
         }
     }
     z.commands.push(com);
+    console.log(z);
     // console.log("HIa");
     // z.commands.forEach((e) => {
     //     console.log(e);
@@ -144,11 +171,15 @@ function consolTagsAndVals(data){
     console.log(trimedVals);
     for(let i = 0;i < trimedTags.length;i++){
         let j = indPresent(trimedTags[i]);
+        // console.log("Intermidiate")
+        console.log(j);
         if(j != -1){ /// the second input is predefined tags not considered because no other option was there{needs a better eleboration for next vertion}
             // console.log("Hello world\n");
             // console.log(preDefinedCommands[j]);
             // console.log("STOR function testing");
             let commands = stor(preDefinedCommands[j], trimedVals[i]);
+            // console.log(commands)
+            // console.log(" Hi commands")/
         }
     }
     // tags.forEach((e) => {if(e !== '\\'){count++;console.log(e)}})
@@ -272,3 +303,11 @@ setTimeout(() => {
 
 
 // Retesting confirmed moving on to error handling
+
+
+
+// 17 march 4:17
+
+// vals -> array of strings where each element is a string that is
+// being parsed and contains tags with their args 
+// and need further parsing to extract tags and args differently
