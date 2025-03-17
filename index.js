@@ -61,10 +61,11 @@ function stor(x, y){
         }
     }
     z.commands.push(com);
-    z.commands.forEach((e) => {
-        console.log(e);
-    })
-
+    // console.log("HIa");
+    // z.commands.forEach((e) => {
+    //     console.log(e);
+    // })
+    return z;
 }
 
 
@@ -138,6 +139,7 @@ function consolTagsAndVals(data){
             trimedVals.push(vals[i]);
         }   
     }
+    console.log("trimedTags : ");
     console.log(trimedTags);
     console.log(trimedVals);
     for(let i = 0;i < trimedTags.length;i++){
@@ -146,7 +148,7 @@ function consolTagsAndVals(data){
             // console.log("Hello world\n");
             // console.log(preDefinedCommands[j]);
             // console.log("STOR function testing");
-            stor(preDefinedCommands[j], trimedVals[i]);
+            let commands = stor(preDefinedCommands[j], trimedVals[i]);
         }
     }
     // tags.forEach((e) => {if(e !== '\\'){count++;console.log(e)}})
@@ -167,10 +169,10 @@ setTimeout(() => {
                       .replace(/<\/div>/g, "")
                       .replace(/<br>/g, "\n")
                       .replace(/&nbsp;/g, " ")
-                      .replace(/\s+/g, " ");
+                    //   .replace(/\s+/g, " ");
                 consolTagsAndVals(data);
                 // stor();
-                console.log(data);
+                // console.log(data);
             }, 1000);
         });
 }, 200);
@@ -221,7 +223,6 @@ setTimeout(() => {
 //                                                  ^ => this '&' is the guilty
 
 // 14th march 10:05
-
 // //  data = document.getElementById("resumeCode").innerHTML
 // .replace("&nbsp;", " ");
 //  have tried this but it turned into very new and ... thing because it started ignoring one space in continuation but what;
@@ -239,3 +240,35 @@ setTimeout(() => {
 // 2️ this will do keep it for next time -> Enhance the Parser – Make it more robust and flexible, handling edge cases better (e.g., nested commands, unexpected inputs).
 // 3️ Test the Full Pipeline – Ensure it correctly transforms text into structured resume content before we worry about the PDF part.
 // 4️ Once the Parser is Rock-Solid, THEN Move to PDF – By this point, we’ll be dealing with clean, structured data, making PDF generation easier.
+
+// test case 1                                                                                                  - > working for now atleast
+// \name nikhil patidar      dasdddddd                                                                         
+// \ok \\\sdcasdc %dssca\tagnew sdcao jih \\\tag \\ tag     \tag                                               
+// \name nikhil    \\\\\patidaar                                                                               
+
+
+
+// test case 2                                                                                                  - > working for now atleast
+// \name nikhil patidar      sdc      d%cssd
+// vsdfv\name tanay kumar sharma% cofounder
+// \name ishika 
+// \comments are Treated%perfectly
+//  yep all working \\\\\\\\vss ok working too
+
+
+
+
+
+// sdvacs\name nikhil
+
+
+// test case 3                                                                                                  - > working for now atleast
+
+// \name nikhil patidar
+// \tanay kumar sharma %this is inline  comment
+// % this is a pure comment 
+// \\\\\\\this tag is special \name inline tags working 
+// \name              ishika % multispacing issues dont fall in here
+
+
+// Retesting confirmed moving on to error handling
