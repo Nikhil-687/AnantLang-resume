@@ -3,7 +3,8 @@ let data = "";
 
 
 let trimData = '';
-
+let colors = [];
+let keyword = ['\\name', '\\defcolor'];
 
 function invert(s){
     if(s === '{')return '}';
@@ -34,14 +35,44 @@ let preDefinedCommands = {
                             [] -> this feilds are optional                  \
                             [style:'display:flex, fontSize:20px']-> can directly pass css to it        \
         "
+    },
+    "\\defcolor":{
+        name: "\\defcolor",
+        syntax: "\\defcolor {colorname} (#000 formate)",
+        commad: [],
+        message: "This is a very basic commands create a color which can be accessed with color name to direcltly use colour and get rid of clomplexities of 6 digit numbers followed afer a '#' mark",
+        options: "B(old)/U(nderline)/H(ighlight)/L(arge)/S(mall)",
+        discription: "                  \
+                            This is a very basic commands create a color which can be accessed with color name to direcltly use colour and get rid of clomplexities of 6 digit numbers followed afer a '#' mark                            \
+                            \\defcolor {colorname} (#000 formate) \
+        "
     }
 };
 
 let comNames = [
-    '\\name'
+    '\\name',
+    "\\defcolor"
     // '\\head1'
 ]
 
+
+// priority deciders if you name a color nikhil and a font style nikhil too the colour will set to nikhi type but font will remain default
+// we can conculd changing sequence of props array will change priorities of props
+let props = [colors];
+
+function ispresent(e, props){
+    props.forEach((prop) => {
+        // sub challenge how to call this prop
+        prop.forEach((val) => {
+            if(val === e){
+                // console.log(e);
+                console.log(e, " found in ", prop);
+                return 1;
+            }
+        });
+    })
+    return 0;
+}
 
 function indPresent(s){
     // for(let i = 0;i < preDefinedCommands.length;i++){
@@ -68,12 +99,12 @@ function stor(x, y){
     // object to return 
     let z = {
         name: x.name,
-        commands: []
+        command: []
     };
     let com = '';
     for(let i = z.name.length;i < y.length;i++){
         if(y[i] == ' ' || y[i] == '[' || y[i] == '{' || y[i] == '(' || y[i] == ')' || y[i] == '}' || y[i] == ']'){
-            if(com.trim() !== '')z.commands.push(com);
+            if(com.trim() !== '')z.command.push(com);
             com = '';
             if(y[i] == '{' || y[i] =='(' || y[i] == '['){
                 let till = invert(y[i]);
@@ -86,7 +117,7 @@ function stor(x, y){
             com += y[i];
         }
     }
-    z.commands.push(com);
+    z.command.push(com);
     console.log(z);
     // console.log("HIa");
     // z.commands.forEach((e) => {
@@ -155,8 +186,8 @@ function consolTagsAndVals(data){
             trimData+= data[i];
         }
     }
-    console.log(" ");
-    console.log(trimData);
+    // console.log(" ");
+    // console.log(trimData);
     let trimedTags = [];
     let trimedVals = [];
     for(let i = 0;i < tags.length;i++){
@@ -166,19 +197,32 @@ function consolTagsAndVals(data){
             trimedVals.push(vals[i]);
         }   
     }
-    console.log("trimedTags : ");
-    console.log(trimedTags);
-    console.log(trimedVals);
+    // console.log("trimedTags : ");
+    // console.log(trimedTags);
+    // console.log(trimedVals);
+    colors = [];
     for(let i = 0;i < trimedTags.length;i++){
         let j = indPresent(trimedTags[i]);
         // console.log("Intermidiate")
-        console.log(j);
+        // console.log(j);
         if(j != -1){ /// the second input is predefined tags not considered because no other option was there{needs a better eleboration for next vertion}
             // console.log("Hello world\n");
             // console.log(preDefinedCommands[j]);
             // console.log("STOR function testing");
             let commands = stor(preDefinedCommands[j], trimedVals[i]);
-            // console.log(commands)
+            if(j == '\\defcolor'){
+                colors.push(commands);
+            }
+            // console.log("Hello World\n");
+            // console.log(commands);
+            for(let i = 0;i < commands["command"].length;i++){
+                if(ispresent(commands["command"][i], props)){
+                    
+                }
+                // subtask 1 def ispresent -> ongoing
+                // subtask 2 def props -> done
+            }
+            // console.log(j)
             // console.log(" Hi commands")/
         }
     }
@@ -203,7 +247,7 @@ setTimeout(() => {
                     //   .replace(/\s+/g, " ");
                 consolTagsAndVals(data);
                 // stor();
-                // console.log(data);
+                // console.log(colors); -> displayed stored values it perfectly
             }, 1000);
         });
 }, 200);
@@ -311,3 +355,26 @@ setTimeout(() => {
 // vals -> array of strings where each element is a string that is
 // being parsed and contains tags with their args 
 // and need further parsing to extract tags and args differently
+
+
+/// 19 march 
+// yesterday just learned the concepts of S-expressions and Qexpressiong today is the emplimantation day 
+// not exactly S, Q expressiong because we are dealing complex so we will insert a object of array for every expressing to the main data set 
+// for now we will take it to online data bases later words todays tasks 
+// 1 segregating args or values of the tags and vreating structured s expressions 
+// 2 start evaluation part though 
+// 3 emplimenting variable of users wish  
+
+
+
+///task complitioned 19 march 2:23
+//  created variables and arrays of to stores colors parsing them storing them and checking if it exists
+//  '\defcolor' command primilary testcase passed
+//  keyword array created too.
+
+
+//  further challenges we are for now only able to parse monoArgedCommand and are trying to parse multiArgedCommands
+//  the following is how it works
+
+//  -> \defcolor black #000 or \defcolor black (#000) are monoArgedCommands
+//  -> \name {nikhil patidar} or \name nikhil (B, U, I) are multiArgedCommandsnikhil
